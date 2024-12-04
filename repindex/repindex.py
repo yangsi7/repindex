@@ -184,7 +184,9 @@ def main():
     print("Building dependency graphs...")
 
     # Full graph
-    dependency_graph_full = build_dependency_graph(repo_path, graph_type='full')
+    dependency_graph_full = build_dependency_graph(
+            repo_path, graph_type='full'
+            )
     with open(
         os.path.join(output_path, 'dependency_graph_full.json'),
         'w',
