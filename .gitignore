@@ -1,7 +1,49 @@
-
-# Ignore unnecessary files such as __pycache__ and virtual environments.
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.egg-info/
-env/
+*$py.class
+
+# Distribution / packaging
+build/
 dist/
+*.egg-info/
+*.egg
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# PyCharm project files
+.idea/
+
+# VS Code settings
+.vscode/
+
+# Output directories
+repindex/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# GitHub workflows
+# (Not ignored; we want to include these files in the repository)
+!.github/
