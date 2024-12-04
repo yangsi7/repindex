@@ -1,0 +1,9 @@
+
+[project]
+name = "repindex"
+version = "0.1.0"
+description = "Repository indexing and documentation generator"
+authors = [{name = "Your Name", email = "you@example.com"}]
+dependencies = []
+[build-system]
+requires = ["setuptools", "wheel"]

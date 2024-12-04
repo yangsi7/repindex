@@ -1,0 +1,7 @@
+
+# Ignore unnecessary files such as __pycache__ and virtual environments.
+__pycache__/
+*.py[cod]
+*.egg-info/
+env/
+dist/
