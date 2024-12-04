@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.6"
 license = { text = "MIT License" }
 authors = [
-  { name = "Your Name", email = "you@example.com" }
+  { name = "Simon Yang"}
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
@@ -17,7 +17,7 @@ classifiers = [
 keywords = ["repository", "index", "documentation", "dependency graph"]
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/repindex"
+"Homepage" = "https://github.com/yangsi7/repindex"
 
 [project.scripts]
 repindex = "repindex.repindex:main"
