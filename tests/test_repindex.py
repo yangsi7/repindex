@@ -46,7 +46,9 @@ class TestRepindex(unittest.TestCase):
         graph = repindex.build_dependency_graph(self.test_dir)
         self.assertIn('file1.ts', graph['nodes'])
         self.assertIn('file2.ts', graph['nodes'])
-        self.assertTrue(any(edge['from'] == 'file1.ts' for edge in graph['edges']))
+        self.assertTrue(
+                any(edge['from'] == 'file1.ts' for edge in graph['edges'])
+                )
 
     def test_generate_markdown(self):
         markdown = repindex.generate_markdown(self.test_dir)
