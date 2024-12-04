@@ -22,7 +22,7 @@ Install `repindex` using `pip`:
 pip install repindex
 ```
 
-Usage
+### Usage
 
 repindex /path/to/repository [-o /path/to/output_dir]
 
