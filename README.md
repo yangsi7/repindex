@@ -23,61 +23,61 @@ pip install repindex
 ```
 
 ### Usage
-
 repindex /path/to/repository [-o /path/to/output_dir]
-
-	•	repository_path: The path to the repository you want to index.
-	•	-o, --output_dir: (Optional) The directory where outputs will be saved. Defaults to the current directory.
+- repository_path: The path to the repository you want to index.
+- -o, --output_dir: (Optional) The directory where outputs will be saved. Defaults to the current directory.
 
 Example
-
+```bash
 repindex ./my_project -o ./output
+```
 
-Outputs
+#### Outputs
 
 The outputs are saved in a repindex/ directory inside the specified output directory:
-	•	tree_structure.txt: Tree representation of the repository.
-	•	Dependency Graphs:
-	•	dependency_graph_full.json: Full graph with imports and exports, including objects.
-	•	dependency_graph_imports.json: Only imports with objects listed.
-	•	dependency_graph_exports.json: Only exports with objects listed.
-	•	dependency_graph_no_objects.json: All relationships without listing objects.
-	•	Markdown Documentation:
-	•	documentation.md: Full documentation with all files and contents.
-	•	documentation_light.md: Light documentation including only code files.
+-tree_structure.txt: Tree representation of the repository.
+-Dependency Graphs:
+-dependency_graph_full.json: Full graph with imports and exports, including objects.
+-dependency_graph_imports.json: Only imports with objects listed.
+-dependency_graph_exports.json: Only exports with objects listed.
+-dependency_graph_no_objects.json: All relationships without listing objects.
+-Markdown Documentation:
+-documentation.md: Full documentation with all files and contents.
+-documentation_light.md: Light documentation including only code files.
 
-Running Tests
+#### Running Tests
 
 To run the unit tests:
-
+```bash
 python -m unittest discover tests
+```
 
-Code Style
+#### Code Style
 
 The code adheres to PEP8 standards. You can check code style using flake8:
-
+```
 pip install flake8
 flake8 repindex tests
+```
 
-Continuous Integration
+#### Continuous Integration
 
 Continuous Integration is set up using GitHub Actions. The workflow runs tests and linting on each push and pull request.
 
-License
+#### License
 
 This project is licensed under the MIT License.
 
-Author
+#### Author
+- Name: Simon Yang
+- GitHub: yangsi7
 
-	•	Simon Yang
-	•	GitHub: yangsi7
-
-Contributing
+#### Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request on GitHub.
 
-Acknowledgments
+#### Acknowledgments
 
-	•	Thanks to Me, Myself and I, who have helped improve this project.
+- Thanks to Me, Myself and I, who have helped improve this project.
 
 ---
