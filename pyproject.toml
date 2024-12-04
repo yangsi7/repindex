@@ -1,9 +1,31 @@
-
 [project]
 name = "repindex"
-version = "0.1.0"
-description = "Repository indexing and documentation generator"
-authors = [{name = "Your Name", email = "you@example.com"}]
-dependencies = []
+version = "0.2.0"
+description = "A tool to index a repository and generate structured outputs for visualization and documentation."
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT License" }
+authors = [
+  { name = "Your Name", email = "you@example.com" }
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.6",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+keywords = ["repository", "index", "documentation", "dependency graph"]
+
+[project.urls]
+"Homepage" = "https://github.com/yourusername/repindex"
+
+[project.scripts]
+repindex = "repindex.repindex:main"
+
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+# Optional: Development dependencies
+[project.optional-dependencies]
+dev = ["flake8"]
