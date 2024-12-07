@@ -6,19 +6,21 @@ import os
 import re
 import sys
 
-
-def generate_tree(root_dir, prefix=''):
+def generate_tree(root_dir, prefix='', ignored_folders=None):
+    if ignored_folders is None:
+        ignored_folders = []
     tree = ''
-    entries = sorted(os.listdir(root_dir))
+    entries = sorted(
+        [e for e in os.listdir(root_dir) if e not in ignored_folders]
+    )
     for idx, entry in enumerate(entries):
         path = os.path.join(root_dir, entry)
         connector = '├── ' if idx < len(entries) - 1 else '└── '
         tree += f"{prefix}{connector}{entry}\n"
         if os.path.isdir(path):
             extension = '│   ' if idx < len(entries) - 1 else '    '
-            tree += generate_tree(path, prefix + extension)
+            tree += generate_tree(path, prefix + extension, ignored_folders)
     return tree
-
 
 def extract_dependencies(file_path):
     dependencies = {'imports': [], 'exports': []}
@@ -28,37 +30,42 @@ def extract_dependencies(file_path):
         r'(?:class|function|const|let|var|interface|type|enum)?\s*([\w]+)'
     )
 
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-        imports = re.findall(import_pattern, content)
-        exports = re.findall(export_pattern, content)
-        dependencies['imports'].extend(imports)
-        dependencies['exports'].extend(exports)
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+            imports = re.findall(import_pattern, content)
+            exports = re.findall(export_pattern, content)
+            dependencies['imports'].extend(imports)
+            dependencies['exports'].extend(exports)
+    except (UnicodeDecodeError, IOError) as e:
+        print(f"Warning: Could not read file {file_path}: {str(e)}")
     return dependencies
 
+def build_dependency_graph(root_dir, graph_type='full', ignored_folders=None):
+    if ignored_folders is None:
+        ignored_folders = []
 
-def build_dependency_graph(root_dir, graph_type='full'):
     graph = {'nodes': [], 'edges': []}
     file_dependencies = {}
     file_paths = {}
 
-    # Collect all TypeScript files and their dependencies
-    for dirpath, _, filenames in os.walk(root_dir):
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        # Filter out ignored directories
+        dirnames[:] = [d for d in dirnames if d not in ignored_folders]
+
         for filename in filenames:
             if filename.endswith(('.ts', '.tsx')):
                 filepath = os.path.join(dirpath, filename)
                 relative_path = os.path.relpath(filepath, root_dir)
-                file_paths[relative_path] = filepath
                 if relative_path not in graph['nodes']:
                     graph['nodes'].append(relative_path)
                 deps = extract_dependencies(filepath)
                 file_dependencies[relative_path] = deps
 
-    # Build edges based on imports and/or exports
     for file, deps in file_dependencies.items():
         if graph_type in ['full', 'imports_only']:
             for imp in deps['imports']:
-                # Resolve the imported file path
+                # Resolve imported file path
                 if imp.startswith('.'):
                     imported_file = os.path.normpath(
                         os.path.join(os.path.dirname(file), imp)
@@ -66,10 +73,8 @@ def build_dependency_graph(root_dir, graph_type='full'):
                     if os.path.isdir(os.path.join(root_dir, imported_file)):
                         imported_file = os.path.join(imported_file, 'index.ts')
                     else:
-                        if not any(
-                            imported_file.endswith(ext)
-                            for ext in ['.ts', '.tsx']
-                        ):
+                        if not any(imported_file.endswith(ext)
+                                   for ext in ['.ts', '.tsx']):
                             imported_file += '.ts'
                 else:
                     imported_file = imp  # External module or alias
@@ -97,7 +102,6 @@ def build_dependency_graph(root_dir, graph_type='full'):
 
     return graph
 
-
 def detect_language(filename):
     if filename.endswith(('.ts', '.tsx')):
         return 'typescript'
@@ -110,36 +114,53 @@ def detect_language(filename):
     else:
         return ''
 
+def generate_markdown(root_dir, ignored_folders=None):
+    if ignored_folders is None:
+        ignored_folders = []
 
-def generate_markdown(root_dir):
     markdown = ''
-    for dirpath, _, filenames in os.walk(root_dir):
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        # Filter out ignored directories
+        dirnames[:] = [d for d in dirnames if d not in ignored_folders]
+
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
             relative_path = os.path.relpath(filepath, root_dir)
             markdown += f"### {relative_path}\n\n"
-            with open(filepath, 'r', encoding='utf-8') as file:
-                content = file.read()
-                language = detect_language(filename)
-                markdown += f"```{language}\n{content}\n```\n\n"
+            try:
+                with open(filepath, 'r', encoding='utf-8') as file:
+                    content = file.read()
+                    language = detect_language(filename)
+                    markdown += f"```{language}\n{content}\n```\n\n"
+            except (UnicodeDecodeError, IOError) as e:
+                print(f"Warning: Could not read file {filepath}: {str(e)}")
+                markdown += f"\nError: Could not read file content\n\n\n"
     return markdown
 
+def generate_light_markdown(root_dir, ignored_folders=None):
+    if ignored_folders is None:
+        ignored_folders = []
 
-def generate_light_markdown(root_dir):
     markdown = ''
     code_extensions = ('.ts', '.tsx', '.css', '.py', '.sh')
-    for dirpath, _, filenames in os.walk(root_dir):
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        # Filter out ignored directories
+        dirnames[:] = [d for d in dirnames if d not in ignored_folders]
+
         for filename in filenames:
             if filename.endswith(code_extensions):
                 filepath = os.path.join(dirpath, filename)
                 relative_path = os.path.relpath(filepath, root_dir)
                 markdown += f"### {relative_path}\n\n"
-                with open(filepath, 'r', encoding='utf-8') as file:
-                    content = file.read()
-                    language = detect_language(filename)
-                    markdown += f"```{language}\n{content}\n```\n\n"
+                try:
+                    with open(filepath, 'r', encoding='utf-8') as file:
+                        content = file.read()
+                        language = detect_language(filename)
+                        markdown += f"```{language}\n{content}\n```\n\n"
+                except (UnicodeDecodeError, IOError) as e:
+                    print(f"Warning: Could not read file {filepath}: {str(e)}")
+                    markdown += f"\nError: Could not read file content\n\n\n"
     return markdown
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -153,10 +174,17 @@ def main():
         default='.',
         help='Output directory (default: current directory)'
     )
+    parser.add_argument(
+        '--ignore',
+        default='',
+        help='Comma-separated list of directories to ignore'
+    )
+
     args = parser.parse_args()
 
     repo_path = args.repository_path
     output_dir = args.output_dir
+    ignored_folders = [f.strip() for f in args.ignore.split(',') if f.strip()]
     output_path = os.path.join(output_dir, 'repindex')
 
     if not os.path.isdir(repo_path):
@@ -170,7 +198,7 @@ def main():
 
     # Step 1: Generate repository structure
     print("Generating repository structure...")
-    tree_output = generate_tree(repo_path)
+    tree_output = generate_tree(repo_path, ignored_folders=ignored_folders)
     with open(
         os.path.join(output_path, 'tree_structure.txt'),
         'w',
@@ -185,8 +213,8 @@ def main():
 
     # Full graph
     dependency_graph_full = build_dependency_graph(
-            repo_path, graph_type='full'
-            )
+        repo_path, graph_type='full', ignored_folders=ignored_folders
+    )
     with open(
         os.path.join(output_path, 'dependency_graph_full.json'),
         'w',
@@ -196,7 +224,7 @@ def main():
 
     # Imports only graph
     dependency_graph_imports = build_dependency_graph(
-        repo_path, graph_type='imports_only'
+        repo_path, graph_type='imports_only', ignored_folders=ignored_folders
     )
     with open(
         os.path.join(output_path, 'dependency_graph_imports.json'),
@@ -207,7 +235,7 @@ def main():
 
     # Exports only graph
     dependency_graph_exports = build_dependency_graph(
-        repo_path, graph_type='exports_only'
+        repo_path, graph_type='exports_only', ignored_folders=ignored_folders
     )
     with open(
         os.path.join(output_path, 'dependency_graph_exports.json'),
@@ -218,7 +246,7 @@ def main():
 
     # No objects graph
     dependency_graph_no_objects = build_dependency_graph(
-        repo_path, graph_type='no_objects'
+        repo_path, graph_type='no_objects', ignored_folders=ignored_folders
     )
     with open(
         os.path.join(output_path, 'dependency_graph_no_objects.json'),
@@ -231,7 +259,7 @@ def main():
 
     # Step 3: Generate Markdown documentation
     print("Generating Markdown documentation...")
-    markdown_output = generate_markdown(repo_path)
+    markdown_output = generate_markdown(repo_path, ignored_folders=ignored_folders)
     with open(
         os.path.join(output_path, 'documentation.md'),
         'w',
@@ -242,7 +270,7 @@ def main():
 
     # Generate light Markdown documentation
     print("Generating light Markdown documentation...")
-    markdown_light_output = generate_light_markdown(repo_path)
+    markdown_light_output = generate_light_markdown(repo_path, ignored_folders=ignored_folders)
     with open(
         os.path.join(output_path, 'documentation_light.md'),
         'w',

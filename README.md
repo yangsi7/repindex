@@ -55,7 +55,7 @@ python -m unittest discover tests
 #### Code Style
 
 The code adheres to PEP8 standards. You can check code style using flake8:
-```
+```bash
 pip install flake8
 flake8 repindex tests
 ```
