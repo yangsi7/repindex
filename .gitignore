@@ -18,19 +18,6 @@ venv/
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-.hypothesis/
-.pytest_cache/
-
 # PyCharm project files
 .idea/
 
@@ -39,11 +26,8 @@ coverage.xml
 
 # Output directories
 repindex/
+reindex/
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# GitHub workflows
-# (Not ignored; we want to include these files in the repository)
-!.github/
