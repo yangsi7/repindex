@@ -4,23 +4,30 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "repindex"
-version = "0.3.0"
+version = "0.3.2"
 description = "A tool to index a repository and generate structured outputs for visualization and documentation."
 readme = "README.md"
 requires-python = ">=3.6"
-license = {text = "MIT License"}
+license = "MIT"
 authors = [
-  {name = "Your Name", email = "you@example.com"}
+  {name = "Simon Yang", email = "simon@example.com"}
 ]
 classifiers = [
   "Programming Language :: Python :: 3",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent"
 ]
-keywords = ["repository", "index", "documentation", "dependency graph", "context"]
+keywords = ["repository", "index", "documentation", "dependency graph", "context", "llm"]
+dependencies = [
+  "setuptools>=61.0",
+]
+
+[project.optional-dependencies]
+clipboard = ["pyperclip>=1.8.0"]
+dev = ["flake8>=5.0.0", "pytest>=7.0.0"]
 
 [project.scripts]
 repindex = "repindex.repindex:main"
 
 [project.urls]
-"Homepage" = "https://github.com/yourusername/repindex"
+"Homepage" = "https://github.com/yangsi7/repindex"
+"Bug Tracker" = "https://github.com/yangsi7/repindex/issues"
